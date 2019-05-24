@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Topic;
+use App\Commentaire;
 use Illuminate\Http\Request;
 use Validator;
 
 class TopicController extends Controller
 {
+    public function __construct(){
+         $this->middleware('auth')->except('index','show','search');
+        }
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +19,7 @@ class TopicController extends Controller
      */
     public function index()
     {
-        $topics = Topic::limit(6)->get();
+        $topics = Topic::orderBy('created_at','desc')->get();
         return view('index', [
             'topics' => $topics,
         ]);
@@ -28,6 +32,7 @@ class TopicController extends Controller
      */
     public function create()
     {
+
         return view('create');
     }
 
@@ -39,16 +44,14 @@ class TopicController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+        $this->validate($request, [
             'titre' => 'required|max:75',
-            'message' => 'required'
-        ])->validate();
-        if ($validator->fails()){
-            return back()->withErrors($validator)->withInput();
-        }
+            'message' => 'required',
+        ]);
         $post = new Topic;
         $post->titre = $request->input('titre');
         $post->message = $request->input('message');
+        $post->user_id=auth()->id();
         $post->save();
         return redirect()->route('home')->with(["status" =>"topic enregistré"]);
     }
@@ -87,13 +90,10 @@ class TopicController extends Controller
      */
     public function update(Request $request, Topic $topic)
     {
-        $validator = Validator::make($request->all(),[
+        $this->validate($request, [
             'titre' => 'required|max:75',
-            'message' => 'required'
+            'message' => 'required',
         ]);
-        if ($validator->fails()){
-            return back()->withErrors($validator)->withInput();
-        }
         $topic->titre = $request->input('titre');
         $topic->message = $request->input('message');
         $topic->save();
@@ -109,21 +109,22 @@ class TopicController extends Controller
     public function destroy(Topic $topic)
     {
         $topic->delete();
-        return redirect()->route('index');
+        return redirect()->route('home')->with(["status" =>"topic supprimé"]);;
     }
 
-    public function comment(Request $request, $id)
+    public function comment(Request $request)
     {
         $post = new Commentaire;
-        $post->titre = $request->input('message');
-        $post->topic_id = $id;
+        $post->message = $request->message;
+        $post->topic_id = $request->id;
         $post->save();
-        return view('index');
+        return redirect()->route('home')->with(["status" =>"commentaire posté"]);
     }
 
     public function search(Request $request)
     {
-        $result = Topic::where('titre', '=', " $request->input('search')" )->get();
+        $param = $request->input('search');
+        $result = Topic::where('titre','LIKE','%'.$param.'%')->get();
         return view('index', ['topics'=>$result,]);
     }
 }

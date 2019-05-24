@@ -8,6 +8,6 @@ use Faker\Generator as Faker;
 $factory->define(Commentaire::class, function (Faker $faker) {
     return [
         'message' => $faker->paragraph($nbSentences = 3, $variableNbSentences = true),
-        'topic_id' => $faker->numberBetween($min = 1, $max=20),
+        'topic_id' => $faker->numberBetween($min = 1, $max=40),
     ];
 });

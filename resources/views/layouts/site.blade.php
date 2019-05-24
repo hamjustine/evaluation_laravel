@@ -30,19 +30,17 @@
 
     </head>
     <body>
-
         <div class="container-fluid">
-
             <div class="headernav">
                 <div class="container">
                     <div class="row">
                     <div class="col-lg-1 col-xs-3 col-sm-2 col-md-2 logo "><a href="{{route('home')}}"><img src="{{asset('images/logo.jpg')}}" alt=""></a></div>
                         <div class="col-lg-3 col-xs-9 col-sm-5 col-md-3 selecttopic">
-                            
                         </div>
                         <div class="col-lg-4 search hidden-xs hidden-sm col-md-3">
                             <div class="wrap">
-                                <form action="#" method="post" class="form">
+                                <form action="{{route('recherche')}}" method="POST" class="form">
+                                @csrf
                                     <div class="pull-left txt"><input type="text" class="form-control" placeholder="Search Topics" name="search"></div>
                                     <div class="pull-right"><button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button></div>
                                     <div class="clearfix"></div>
@@ -50,33 +48,35 @@
                             </div>
                         </div>
                         <div class="col-lg-4 col-xs-12 col-sm-5 col-md-4 avt">
+                            @auth
                             <div class="stnt pull-left">                            
                                 <form action="{{route('topics.create')}}" method="get" class="form">
                                     <button class="btn btn-primary">Nouveau Topic</button>
                                 </form>
                             </div>
-
-                           
-                            
-                            <div class="clearfix">
-                            @auth
-                            <form action="{{route('logout')}}" method="post" class="form">
-                            <button>Se déconnecter</button>
-                            </form>
-                            @else
-                            
-                            <a href="{{route('login')}}"><button >Connexion</button></a>
-                           
-                            <a href="{{route('register')}}"><button >S'inscrire</button></a>
-                            
                             @endauth
-</div>
+                            <div class="clearfix">
+                                @auth
+                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();">
+                                    {{ __('Logout') }}
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
+                                @else
+                                
+                                <a href="{{route('login')}}"><button >Connexion</button></a>
+                            
+                                <a href="{{route('register')}}"><button >S'inscrire</button></a>
+                            
+                                @endauth
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-
             <section class="content">
                 <div class="container">
                     <div class="row">
@@ -84,37 +84,27 @@
                             <div class="pull-left">
                                 </div>
                             <div class="pull-left">
-                                
                             </div>
                             <div class="pull-left"><a href="#" class="prevnext last"><i class="fa fa-angle-right"></i></a></div>
                             <div class="clearfix"></div>
                         </div>
                     </div>
                 </div>
-
-
                 <div class="container">
                     <div class="row">
-
-@if($errors->any())
-    @foreach ($errors as $error)
-        <p>{{$error}}</p>
-     @endforeach
-@endif
-            
-@if (session('status'))
- {{session('status') }}
-@endif
+                        @if($errors->any())
+                            @foreach ($errors as $error)
+                                <p style="color:red">{{$error}}</p>
+                            @endforeach
+                        @endif
+                                    
+                        @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                        @endif
                         @yield('content')
-
-
-                        
-
-
-
-
                         <div class="col-lg-4 col-md-4">
-            
                             <!-- -->
                             <div class="sidebarblock">
                                 <h3>Categories</h3>
@@ -216,9 +206,6 @@
                 </div>
 
 
-
-
-
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-8 col-xs-12">
@@ -226,8 +213,6 @@
                         </div>
                     </div>
                 </div>
-
-
             </section>
 
             <footer>

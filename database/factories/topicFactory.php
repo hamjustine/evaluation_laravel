@@ -9,5 +9,6 @@ $factory->define(Topic::class, function (Faker $faker) {
     return [
         'titre' => $faker->text($maxNbChars = 75),
         'message' => $faker->paragraph($nbSentences = 3, $variableNbSentences = true),
+        'user_id' => $faker->numberBetween($min = 1, $max = 5),
     ];
 });

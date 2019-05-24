@@ -17,6 +17,8 @@ class CreateTopicsTable extends Migration
             $table->bigIncrements('id');
             $table->char('titre', 75);
             $table->text('message');
+            $table->bigInteger('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
 
         });

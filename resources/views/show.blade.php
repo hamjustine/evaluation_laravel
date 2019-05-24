@@ -68,18 +68,20 @@
 
                 @endforeach
                 <!-- POST -->
+                @auth
                 <div class="post">
-                <form action="#" class="form" method="#">
+                <form action="{{route('commentaire')}}" class="form" method="POST">
+                @csrf
                         <div class="topwrap">
                             <div class="userinfo pull-left">
                                 
-                            <input type="hidden" name="id" value="#">
+                            <input type="hidden" name="id" value="{{$topic->id}}">
                                 
                             </div>
                             <div class="posttext pull-left">
                                 <div class="textwraper">
                                     <div class="postreply">Post a Reply</div>
-                                    <textarea name="commentaire" id="reply" placeholder="Type your message here"></textarea>
+                                    <textarea name="message" id="reply" placeholder="Type your message here"></textarea>
                                 </div>
                             </div>
                             <div class="clearfix"></div>
@@ -100,6 +102,7 @@
                         </div>
                     </form>
                 </div><!-- POST -->
+                @endauth
 
 
                 
